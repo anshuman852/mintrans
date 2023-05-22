@@ -3,16 +3,18 @@ import re
 import random
 
 class BingTranslator:
-    def __init__(self):
-        self.session = self._get_session()
+    def __init__(self, proxy=None):
+        self.session = self._get_session(proxy)
 
-    def _get_session(self):
+    def _get_session(self, proxy=None):
         session = requests.Session()
         headers = {
             'User-Agent': '',
             'Referer': 'https://www.bing.com/translator'
         }
         session.headers.update(headers)
+        proxies = {'http': proxy, 'https': proxy} if proxy else None
+        session.proxies.update(proxies)
         response = session.get('https://www.bing.com/translator')
         content = response.text
         params_pattern = re.compile(r'params_AbusePreventionHelper\s*=\s*(\[.*?\]);', re.DOTALL)
